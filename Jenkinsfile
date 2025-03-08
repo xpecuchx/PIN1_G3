@@ -6,33 +6,43 @@ pipeline {
   }
 
   environment {
-    ARTIFACT_ID = "elbuo8/webapp:${env.BUILD_NUMBER}"
+    DOCKER_IMAGE_NAME = "federicomas/pin_g3"
   }
-   stages {
-   stage('Building image') {
-      steps{
-          sh '''
-          cd webapp
-          docker build -t testapp .
-             '''  
+
+  stages {
+    stage('Checkout Git Repo') {
+      steps {
+          git branch: "${env.BRANCH_NAME}", url: "https://github.com/xpecuchx/PIN1_G3"
         }
+      }
+
+    stage('Building image') {
+      steps {
+        script {
+          sh "docker build -t ${DOCKER_IMAGE_NAME}:${env.BRANCH_NAME}-${env.BUILD_NUMBER} ."
+        }
+      }
     }
-  
-  
+    
     stage('Run tests') {
       steps {
-        sh "docker run testapp npm test"
+        sh "docker run ${DOCKER_IMAGE_NAME}:${env.BRANCH_NAME}-${env.BUILD_NUMBER} npm test"
       }
     }
-   stage('Deploy Image') {
-      steps{
-        sh '''
-        docker tag testapp 127.0.0.1:5000/mguazzardo/testapp
-        docker push 127.0.0.1:5000/mguazzardo/testapp   
-        '''
+
+    stage('Publish Docker Image') {
+      steps {
+        script {
+          withCredentials([usernamePassword(credentialsId: 'dockerhub-token', passwordVariable: 'DOCKERHUB_PASSWORD', usernameVariable: 'DOCKERHUB_USERNAME')]) {
+            sh "echo ${DOCKERHUB_PASSWORD} | docker login -u ${DOCKERHUB_USERNAME} --password-stdin"
+            sh "docker push ${DOCKER_IMAGE_NAME}:${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
+            sh "docker tag ${DOCKER_IMAGE_NAME}:${env.BRANCH_NAME}-${env.BUILD_NUMBER} ${DOCKER_IMAGE_NAME}:${env.BRANCH_NAME}-latest"
+            sh "docker push ${DOCKER_IMAGE_NAME}:${env.BRANCH_NAME}-latest"
+          }
         }
       }
     }
+  }
 }
 
 
