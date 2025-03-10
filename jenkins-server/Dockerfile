@@ -1,4 +1,4 @@
-FROM jenkins/jenkins:jdk21
+FROM jenkins/jenkins:lts-jdk17
 # Switch to root user
 USER root
 # Install dependencies
@@ -15,6 +15,5 @@ RUN usermod -aG docker jenkins
 USER jenkins
 # Expose Jenkins default port
 EXPOSE 8080
-EXPOSE 50000
 # Define the entrypoint
 ENTRYPOINT ["/usr/bin/tini", "--", "/usr/local/bin/jenkins.sh"]
