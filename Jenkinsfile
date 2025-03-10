@@ -10,8 +10,8 @@ pipeline {
     stage('Checkout Git Repo') {
       steps {
           git branch: "${env.BRANCH_NAME}", url: "${GITHUB_REPO}"
-        }
       }
+    }
 
     stage('Building image') {
       steps {
@@ -41,8 +41,3 @@ pipeline {
     }
   }
 }
-
-
-    
-  
-
