@@ -1,10 +1,6 @@
 pipeline {
   agent any
 
-  options {
-    timeout(time: 2, unit: 'MINUTES')
-  }
-
   environment {
     DOCKER_IMAGE_NAME = "aguspecuch/pin1g3:${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
     GITHUB_REPO = "https://github.com/xpecuchx/PIN1_G3"
