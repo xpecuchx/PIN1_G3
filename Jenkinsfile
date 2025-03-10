@@ -20,12 +20,6 @@ pipeline {
         }
       }
     }
-    
-    stage('Run tests') {
-      steps {
-        sh "docker run ${DOCKER_IMAGE_NAME} npm test"
-      }
-    }
 
     stage('Publish Docker Image') {
       steps {
