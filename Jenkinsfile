@@ -16,14 +16,14 @@ pipeline {
     stage('Building image') {
       steps {
         script {
-          sh "sudo docker build -t ${DOCKER_IMAGE_NAME} ."
+          sh "docker build -t ${DOCKER_IMAGE_NAME} ."
         }
       }
     }
     
     stage('Run tests') {
       steps {
-        sh "sudo docker run ${DOCKER_IMAGE_NAME} npm test"
+        sh "docker run ${DOCKER_IMAGE_NAME} npm test"
       }
     }
 
@@ -31,10 +31,10 @@ pipeline {
       steps {
         script {
           withCredentials([usernamePassword(credentialsId: 'dockerhub-token', passwordVariable: 'DOCKERHUB_PASSWORD', usernameVariable: 'DOCKERHUB_USERNAME')]) {
-            sh "echo ${DOCKERHUB_PASSWORD} | sudo docker login -u ${DOCKERHUB_USERNAME} --password-stdin"
-            sh "sudo docker push ${DOCKER_IMAGE_NAME}"
-            sh "sudo docker tag ${DOCKER_IMAGE_NAME} ${DOCKER_IMAGE_NAME}-latest"
-            sh "sudo docker push ${DOCKER_IMAGE_NAME}-latest"
+            sh "echo ${DOCKERHUB_PASSWORD} | docker login -u ${DOCKERHUB_USERNAME} --password-stdin"
+            sh "docker push ${DOCKER_IMAGE_NAME}"
+            sh "docker tag ${DOCKER_IMAGE_NAME} ${DOCKER_IMAGE_NAME}-latest"
+            sh "docker push ${DOCKER_IMAGE_NAME}-latest"
           }
         }
       }
