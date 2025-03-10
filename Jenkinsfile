@@ -2,7 +2,7 @@ pipeline {
   agent any
 
   environment {
-    DOCKER_IMAGE_NAME = "aguspecuch/pin1g3:${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
+    DOCKER_IMAGE_NAME = "agustinapecuch/pin1g3:${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
     GITHUB_REPO = "https://github.com/xpecuchx/PIN1_G3"
   }
 
